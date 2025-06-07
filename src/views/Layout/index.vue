@@ -2,7 +2,7 @@
 defineOptions({ name: 'LayoutIndex' })
 
 import LayoutNav from './components/LayoutNav.vue'
-import LayoutHome from './components/LayoutHome.vue'
+import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutFooter from './components/LayoutFooter.vue'
 
 </script>
@@ -12,7 +12,7 @@ import LayoutFooter from './components/LayoutFooter.vue'
     <!-- 顶部导航栏 -->
     <LayoutNav />
     <!-- 头部 -->
-    <LayoutHome />
+    <LayoutHeader />
     <!-- 内容区 -->
     <!-- 二级路由出口 -->
     <RouterView />
