@@ -5,7 +5,7 @@ defineOptions({
 </script>
 
 <template>
-  <div>
+  <div style="height: 1200px;">
 	<h3>我是Home页</h3>
   </div>
 </template>
