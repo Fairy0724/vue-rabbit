@@ -12,28 +12,14 @@ import '@/styles/common.scss'
 //   console.log(res);
 // })
 
-import { useIntersectionObserver } from '@vueuse/core'
+//引入懒加载指令插件并注册
+import { lazyPlugin } from '@/directives/index'
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+//懒加载
+app.use(lazyPlugin)
 
 app.mount('#app')
 
-// 定义全局指令
-app.directive('img-lazy', {
-  mounted(el, binding) {
-    // el---指令绑定的元素 img
-    // binding---binding.value指令等号后绑定表达式的值 图片url
-    const { stop } = useIntersectionObserver(
-      el,//监听谁
-      ([{ isIntersecting }]) => {
-        if (isIntersecting) {
-          // 进入视口区域
-          el.src = binding.value
-          stop()
-        }
-    }
-    )
-  }
-})
