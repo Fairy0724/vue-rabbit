@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from "vue";
 
 //定义props,用于让父组件向当前组件传递数据。
 defineProps({

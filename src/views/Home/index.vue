@@ -19,7 +19,7 @@ import HomePanel from "./components/HomePanel.vue"
   <HomeHot />
   <HomeProduct />
 
-  <!-- 测试面板组件 -->
+  <!-- 测试面板组件
   <HomePanel title="新鲜好物" sub-title="新鲜出炉 品质靠谱">
     <div>
       插槽
@@ -27,7 +27,7 @@ import HomePanel from "./components/HomePanel.vue"
   </HomePanel>
   <HomePanel title="人气推荐" sub-title="人气爆款 不容错过">
 
-</HomePanel>
+</HomePanel> -->
 </template>
 
 <style scoped></style>

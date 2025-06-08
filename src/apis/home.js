@@ -1,5 +1,4 @@
 import httpInstance from '@/utils/http'
-import { ElDescriptions } from 'element-plus'
 
 // 获取bannner
 export function getBannerAPI() {
@@ -27,5 +26,16 @@ export const findNewAPI = () => {
 export const findHotAPI = () => {
   return httpInstance({
     url: '/home/hot'
+  })
+}
+
+/**
+ * @description: 获取所有商品模块
+ * @param {*}
+ * @return {*}
+ */
+export const getGoodsAPI = () => {
+  return httpInstance({
+    url:'/home/goods'
   })
 }
