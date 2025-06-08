@@ -1,41 +1,15 @@
 <script setup>
 defineOptions({
   name: "CategoryIndex",
-});
-
-import { getBannerAPI } from "@/apis/home";
-import { ref, onMounted } from "vue";
-import { getCategoryAPI } from "@/apis/category";
-import { useRoute,onBeforeRouteUpdate } from "vue-router";
-import GoodsItem from "../Home/components/GoodsItem.vue";
-// 获取分类数据
-const categoryData = ref({});
-const route = useRoute();
-const getCategoryList = async (id =route.params.id) => {
-  const res = await getCategoryAPI(id);
-  categoryData.value = res.result;
-};
-onMounted(() => {
-  getCategoryList();
-});
-
-//路由参数发生变化时 可以把分类数据接口重新发送
-onBeforeRouteUpdate((to) => {
-  getCategoryAPI(to.params.id)
 })
-//获取banner
-const bannerList = ref([]);
-const getBanner = async () => {
-  const res = await getBannerAPI({
-    distributionSite: "2",
-  });
-  bannerList.value = res.result;
-};
+import GoodsItem from "../Home/components/GoodsItem.vue";
+import { useBanner } from "./composables/useBanner";
+import { useCategory } from "./composables/useCategory";
 
-// 调用
-onMounted(() => {
-  getBanner();
-});
+const { bannerList } = useBanner()
+const { categoryData } = useCategory()
+
+
 </script>
 
 <template>
