@@ -6,19 +6,23 @@ defineOptions({
 import { getBannerAPI } from "@/apis/home";
 import { ref, onMounted } from "vue";
 import { getCategoryAPI } from "@/apis/category";
-import { useRoute } from "vue-router";
+import { useRoute,onBeforeRouteUpdate } from "vue-router";
 import GoodsItem from "../Home/components/GoodsItem.vue";
 // 获取分类数据
 const categoryData = ref({});
 const route = useRoute();
-const getCategoryList = async () => {
-  const res = await getCategoryAPI(route.params.id);
+const getCategoryList = async (id =route.params.id) => {
+  const res = await getCategoryAPI(id);
   categoryData.value = res.result;
 };
 onMounted(() => {
   getCategoryList();
 });
 
+//路由参数发生变化时 可以把分类数据接口重新发送
+onBeforeRouteUpdate((to) => {
+  getCategoryAPI(to.params.id)
+})
 //获取banner
 const bannerList = ref([]);
 const getBanner = async () => {

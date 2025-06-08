@@ -26,6 +26,8 @@ onMounted(() => {
     <!-- 内容区 -->
     <!-- 二级路由出口 -->
     <RouterView />
+    <!-- 添加key 破坏复用机制 强制销毁 -->
+    <!-- <RouterView :key="$route.fullPath"/> -->
     <!-- 底部 -->
     <LayoutFooter />
   </div>
