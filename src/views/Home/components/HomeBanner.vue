@@ -1,7 +1,8 @@
 <script setup>
 import { getBannerAPI } from '@/apis/home'
 import { ref,onMounted } from 'vue'
-const bannerList =ref([])
+const bannerList = ref([])
+// 获取数据
 const getBanner = async () => {
   const res = await getBannerAPI()
   bannerList.value = res.result
