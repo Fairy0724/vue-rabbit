@@ -1,5 +1,15 @@
 <script setup>
+import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
 
+const userStore = useUserStore();
+const router = useRouter();
+
+// 退出登录
+const logout = () => {
+  userStore.clearUserInfo()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -7,10 +17,11 @@
     <div class="container">
       <ul>
         <!-- 多模版渲染 -->
-        <template v-if="false">
-          <li><a href="javascript:;"><i class="iconfont icon-user"></i>周杰伦</a></li>
+        <!-- 是否有token -->
+        <template v-if="userStore.userInfo.token">
+          <li><a href="javascript:;"><i class="iconfont icon-user"></i>{{ userStore.userInfo.account }}</a></li>
           <li>
-            <el-popconfirm title="确认退出吗?" confirm-button-text="确认" cancel-button-text="取消">
+            <el-popconfirm title="确认退出吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="logout">
               <template #reference>
                 <a href="javascript:;">退出登录</a>
               </template>
@@ -32,11 +43,13 @@
 <style scoped lang="scss">
 .app-topnav {
   background: #333;
+
   ul {
     display: flex;
     height: 53px;
     justify-content: flex-end;
     align-items: center;
+
     li {
       a {
         padding: 0 15px;

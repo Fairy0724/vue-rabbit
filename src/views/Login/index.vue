@@ -20,9 +20,9 @@ const router = useRouter()
 // 1.表单对象
 
 const form = ref({
-  account: '',
-  password: '',
-  agree:true
+  account: 'xiaotuxian001',
+  password: '123456',
+  agree: false
 })
 
 // 2.表单校验规则
@@ -56,7 +56,7 @@ const doLogin = async () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       // 校验通过，执行登录逻辑
-      userStore.getUserInfo({ account, password })
+      await userStore.getUserInfo({ account, password })
       //1.提示用户
       ElMessage.success('登录成功')
       // 2.跳转
