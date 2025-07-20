@@ -5,11 +5,18 @@ defineOptions({
 
 // 表单校验
 import { ref } from 'vue'
-import { loginAPI } from '@/apis/user'
+
 import 'element-plus/theme-chalk/el-message.css'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+// 使用用户状态管理
+const userStore = useUserStore()
+
 const router = useRouter()
+
 // 1.表单对象
 
 const form = ref({
@@ -49,8 +56,7 @@ const doLogin = async () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       // 校验通过，执行登录逻辑
-      const res = await loginAPI({ account, password })
-      console.log(res)
+      userStore.getUserInfo({ account, password })
       //1.提示用户
       ElMessage.success('登录成功')
       // 2.跳转
