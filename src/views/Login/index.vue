@@ -2,6 +2,26 @@
 defineOptions({
   name: "LoginIndex",
 })
+
+// 表单校验
+import { ref } from 'vue'
+
+// 表单对象
+const form = ref({
+  account: '',
+  password: '',
+})
+
+// 表单校验规则
+const rules = ref({ 
+  account: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 14, message: '长度在 6 到 14 个字符', trigger: 'blur' }
+  ],
+})
 </script>
 
 <template>
@@ -25,12 +45,12 @@ defineOptions({
         </nav>
         <div class="account-box">
           <div class="form">
-            <el-form label-position="right" label-width="60px" status-icon>
-              <el-form-item label="账户">
-                <el-input />
+            <el-form :model="form" :rules="rules" label-position="right" label-width="60px" status-icon>
+              <el-form-item prop="account" label="账户">
+                <el-input v-model="form.account" />
               </el-form-item>
-              <el-form-item label="密码">
-                <el-input />
+              <el-form-item prop="password" label="密码">
+                <el-input v-model="form.password" />
               </el-form-item>
               <el-form-item label-width="22px">
                 <el-checkbox size="large">
