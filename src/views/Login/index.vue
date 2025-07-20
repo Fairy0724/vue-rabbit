@@ -5,7 +5,11 @@ defineOptions({
 
 // 表单校验
 import { ref } from 'vue'
-
+import { loginAPI } from '@/apis/user'
+import 'element-plus/theme-chalk/el-message.css'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // 1.表单对象
 
 const form = ref({
@@ -39,12 +43,18 @@ const rules = ref({
 })
 // 3.获取form实例统一校验
 const formRef = ref(null)
-const doLogin = () => {
+const doLogin = async () => {
+  const {account, password} = form.value
   // 触发表单校验
-  formRef.value.validate((valid) => {
+  formRef.value.validate(async (valid) => {
     if (valid) {
       // 校验通过，执行登录逻辑
-      console.log('登录成功', form.value)
+      const res = await loginAPI({ account, password })
+      console.log(res)
+      //1.提示用户
+      ElMessage.success('登录成功')
+      // 2.跳转
+      router.replace({ path: '/' })
     } else {
 // 校验失败，提示用户   
       console.log('登录失败')
