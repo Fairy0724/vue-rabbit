@@ -20,14 +20,21 @@ const enterhandler = (index) => {
 //获取鼠标位置
 const target = ref(null)
 // 鼠标在元素内的坐标和是否在元素内
-const {elementX, elementY,inOutside} = useMouseInElement(target)
+const { elementX, elementY, isOutside } = useMouseInElement(target)
 // 监听鼠标移动事件
 const left = ref(0)
 const top = ref(0)
-watch([elementX, elementY],() => {
+//大图位置
+const positionX = ref(0)
+const positionY = ref(0)
+watch([elementX, elementY, isOutside], () => {
+  //如果鼠标不在元素内，则不处理
+  if (isOutside.value) {
+    return
+  }
   //有效区域
   // 横向
-  if(elementX.value >100 && elementX.value < 300) {
+  if (elementX.value > 100 && elementX.value < 300) {
     left.value = elementX.value - 100
   }
   // 纵向
@@ -42,10 +49,14 @@ watch([elementX, elementY],() => {
   if (elementX.value < 100)
     left.value = 0
   //纵
-  if (elementY.value < 100) 
+  if (elementY.value < 100)
     top.value = 0
   if (elementY.value > 300)
     top.value = 200
+
+  // 大图显示
+  positionX.value = -left.value * 2
+  positionY.value = -top.value * 2
 })
 
 </script>
@@ -56,23 +67,24 @@ watch([elementX, elementY],() => {
     <div class="middle" ref="target">
       <img :src="imageList[activeIndex]" alt="" />
       <!-- 蒙层小滑块 -->
-      <div class="layer" :style="{ left: `${left}px`, top: `${top}px` }"></div>
+      <div class="layer" v-show="!isOutside" :style="{ left: `${left}px`, top: `${top}px` }"></div>
+
     </div>
     <!-- 小图列表 -->
     <ul class="small">
-      <li v-for="(img, i) in imageList" :key="i" @mouseenter="enterhandler(i)"
-          :class="{ active: i === activeIndex }">
+      <li v-for="(img, i) in imageList" :key="i" @mouseenter="enterhandler(i)" :class="{ active: i === activeIndex }">
         <img :src="img" alt="" />
       </li>
     </ul>
     <!-- 放大镜大图 -->
-    <div class="large" :style="[
+    <div class="large" v-show="!isOutside" :style="[
+
       {
         backgroundImage: `url(${imageList[0]})`,
-        backgroundPositionX: `0px`,
-        backgroundPositionY: `0px`,
+        backgroundPositionX: `${positionX}px`,
+        backgroundPositionY: `${positionY}px`,
       },
-    ]" v-show="false"></div>
+    ]"></div>
   </div>
 </template>
 
