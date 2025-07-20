@@ -6,7 +6,7 @@ import { loginAPI } from '@/apis/user'
 export const useUserStore = defineStore('user', () => {
   // 1.定义state
   // 用户信息
-  const userInfo = ref({ })
+  const userInfo = ref({})
 
   // 2.定义action
   // 获取用户信息
@@ -16,4 +16,7 @@ export const useUserStore = defineStore('user', () => {
   }
   // 3.导出返回数据和方法
   return { userInfo, getUserInfo }
+}, {
+  // 持久化配置
+  persist: true
 })
