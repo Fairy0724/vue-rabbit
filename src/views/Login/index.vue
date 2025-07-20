@@ -6,14 +6,15 @@ defineOptions({
 // 表单校验
 import { ref } from 'vue'
 
-// 表单对象
+// 1.表单对象
+
 const form = ref({
   account: '',
   password: '',
   agree:true
 })
 
-// 表单校验规则
+// 2.表单校验规则
 const rules = ref({ 
   account: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -36,6 +37,20 @@ const rules = ref({
      }
   ]
 })
+// 3.获取form实例统一校验
+const formRef = ref(null)
+const doLogin = () => {
+  // 触发表单校验
+  formRef.value.validate((valid) => {
+    if (valid) {
+      // 校验通过，执行登录逻辑
+      console.log('登录成功', form.value)
+    } else {
+// 校验失败，提示用户   
+      console.log('登录失败')
+    }
+  })
+}
 </script>
 
 <template>
@@ -59,7 +74,7 @@ const rules = ref({
         </nav>
         <div class="account-box">
           <div class="form">
-            <el-form :model="form" :rules="rules" label-position="right" label-width="60px" status-icon>
+            <el-form ref="formRef" :model="form" :rules="rules" label-position="right" label-width="60px" status-icon>
               <el-form-item prop="account" label="账户">
                 <el-input v-model="form.account" />
               </el-form-item>
@@ -71,7 +86,7 @@ const rules = ref({
                   我已同意隐私条款和服务条款
                 </el-checkbox>
               </el-form-item>
-              <el-button size="large" class="subBtn">点击登录</el-button>
+              <el-button size="large" class="subBtn" @click="doLogin">点击登录</el-button>
             </el-form>
           </div>
         </div>
