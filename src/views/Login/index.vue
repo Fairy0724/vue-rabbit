@@ -10,6 +10,7 @@ import { ref } from 'vue'
 const form = ref({
   account: '',
   password: '',
+  agree:true
 })
 
 // 表单校验规则
@@ -21,6 +22,19 @@ const rules = ref({
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, max: 14, message: '长度在 6 到 14 个字符', trigger: 'blur' }
   ],
+  agree: [
+    { 
+      //自定义校验
+      validate: (rule, value, callback) => {
+        // 如果未勾选同意条款，则提示错误
+        if (!value) {
+          callback(new Error('请同意隐私条款和服务条款'))
+        } else {
+          callback()
+        }
+      },
+     }
+  ]
 })
 </script>
 
@@ -53,7 +67,7 @@ const rules = ref({
                 <el-input v-model="form.password" />
               </el-form-item>
               <el-form-item label-width="22px">
-                <el-checkbox size="large">
+                <el-checkbox size="large" v-model="form.agree">
                   我已同意隐私条款和服务条款
                 </el-checkbox>
               </el-form-item>
