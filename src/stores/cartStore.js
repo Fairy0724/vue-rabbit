@@ -29,12 +29,15 @@ export const useCartStore = defineStore('cart', () => {
     cartList.value = cartList.value.filter((item)=> item.skuId !== skuId)
   }
   //计算属性
-  // 计算总数量
+  // 1)计算总数量
   //total是总和，item是cartList中的每一项
   const allCount = computed(()=>cartList.value.reduce((total, item) => total + item.count, 0))
-  // 计算总价
+  // 2)计算总价
   const allPrice = computed(() => cartList.value.reduce((price, item) => price + item.count * item.price, 0))
-  
+  // 3)已选择数量
+  const selectedCount = computed(() => cartList.value.filter(item => item.selected).reduce((total, item) => total + item.count, 0))
+  // 4)已选择商品合计
+  const selectedPrice = computed(() => cartList.value.filter(item => item.selected).reduce((price, item) => price + item.count * item.price, 0))
   // 单选框
   const singleCheck = (skuId, selected) => {
     // skuId是商品的唯一标识，selected是选中状态
@@ -62,9 +65,11 @@ export const useCartStore = defineStore('cart', () => {
     delCart,
     allCount, 
     allPrice,
+    selectedCount,
+    selectedPrice,
     singleCheck,
     allCheck,
-    isAll
+    isAll,
   }
 }, {
   persist: true,
