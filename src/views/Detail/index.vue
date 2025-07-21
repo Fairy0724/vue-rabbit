@@ -6,8 +6,14 @@ import { getDetail } from '@/apis/detail'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import DetailHot from './components/DetailHot.vue'
+import XtxImageView from '@/components/ImageView/index.vue'
+import XtxSku from '@/components/XtxSku/index.vue'
+import 'element-plus/theme-chalk/el-message.css'
+import { ElMessage } from 'element-plus'
+import { useCartStore } from '@/stores/cartStore'
 
-
+// 使用购物车状态管理
+const cartStore = useCartStore()
 const route = useRoute()
 const goods = ref({})
 const getGoods = async () => {
@@ -20,8 +26,35 @@ onMounted(() => {
 })
 
 // sku组件数据变化
+let skuObj = {}
 const skuChange = (sku) => {
   console.log(sku)
+  skuObj = sku
+}
+
+//count
+const count = ref(1)
+const countChange = (count) => {
+  console.log(count)
+}
+//添加购物车
+const addCart = () => {
+  if (skuObj.skuId) {
+    //规则选全 触发action
+    cartStore.addCart({
+      id: goods.value.id,
+      name: goods.value.name,
+      skuId: skuObj.skuId,
+      count: count.value,
+      picture: goods.value.mainPictures[0],
+      price: goods.value.price,
+      attrsText: skuObj.specsText,
+      selected: true
+    })
+  }
+  else {
+    ElMessage.warning('请先选择商品规格')
+  }
 }
 </script>
 
@@ -32,10 +65,10 @@ const skuChange = (sku) => {
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: `/category/${goods.categories[1].id}` }">{{ goods.categories[1].name
-            }}</el-breadcrumb-item>
+          }}</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: `/category/sub/${goods.categories[0].id}` }">{{
-            goods.categories[0].name}}</el-breadcrumb-item>
-          <el-breadcrumb-item>{{goods.name}}</el-breadcrumb-item>
+            goods.categories[0].name }}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ goods.name }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <!-- 商品信息 -->
@@ -93,11 +126,12 @@ const skuChange = (sku) => {
                 </dl>
               </div>
               <!-- sku组件 -->
-              <XtxSku :goods="goods" @change="skuChange"/>
+              <XtxSku :goods="goods" @change="skuChange" />
               <!-- 数据组件 -->
+              <el-input-number v-model="count" @change="countChange" />
               <!-- 按钮组件 -->
               <div>
-                <el-button size="large" class="btn">
+                <el-button size="large" class="btn" @click="addCart">
                   加入购物车
                 </el-button>
               </div>
