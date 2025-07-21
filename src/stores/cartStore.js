@@ -1,7 +1,7 @@
 //购物车
 // 封装购物车模块
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 
 export const useCartStore = defineStore('cart', () => {
@@ -17,7 +17,7 @@ export const useCartStore = defineStore('cart', () => {
     const item = cartList.value.find((item) =>goods.skuId === item.skuId)
     if (item) {
       // 找到了
-      item.count++
+      item.count += goods.count
     } else {
       // 没找到
       cartList.value.push(goods)
@@ -28,10 +28,18 @@ export const useCartStore = defineStore('cart', () => {
     // 使用数组过滤filter方法
     cartList.value = cartList.value.filter((item)=> item.skuId !== skuId)
   }
+  //计算属性
+  // 计算总数量
+  //total是总和，item是cartList中的每一项
+  const allCount = computed(()=>cartList.value.reduce((total, item) => total + item.count, 0))
+  // 计算总价
+  const allPrice = computed(() => cartList.value.reduce((price, item) => price + item.count * item.price, 0))
   return {
     cartList,
     addCart,
     delCart,
+    allCount, 
+    allPrice,
   }
 }, {
   persist: true,
