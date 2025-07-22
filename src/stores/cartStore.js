@@ -98,6 +98,11 @@ export const useCartStore = defineStore('cart', () => {
     // 判断cartList中所有商品的selected状态是否都为true
     cartList.value.every(item => item.selected)
   )
+
+  // 清除购物车
+  const clearCart = () => {
+    cartList.value = []
+  }
   return {
     cartList,
     addCart,
@@ -109,6 +114,7 @@ export const useCartStore = defineStore('cart', () => {
     singleCheck,
     allCheck,
     isAll,
+    clearCart,
   }
 }, {
   persist: true,
