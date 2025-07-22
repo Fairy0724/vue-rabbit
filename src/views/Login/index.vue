@@ -10,7 +10,7 @@ import 'element-plus/theme-chalk/el-message.css'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { RouterLink } from 'vue-router'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/userStore'
 
 // 使用用户状态管理
 const userStore = useUserStore()

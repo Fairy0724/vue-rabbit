@@ -72,7 +72,7 @@ const allCheck = (selected) => {
                     <el-button type="primary">随便逛逛</el-button>
                   </el-empty>
                 </div>
-              </td>
+              </td> 
             </tr>
           </tbody>
         </table>

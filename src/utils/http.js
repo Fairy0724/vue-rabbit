@@ -2,7 +2,7 @@
 import axios from "axios";
 import { ElMessage } from "element-plus";
 import 'element-plus/theme-chalk/el-message.css'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/userStore'
 import router from '@/router'
 
 
@@ -10,7 +10,7 @@ import router from '@/router'
 const httpInstance = axios.create({
   baseURL: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',
   // 超时时间
-  timeout:5000
+  timeout: 5000
 })
 
 //拦截器
@@ -30,7 +30,7 @@ httpInstance.interceptors.response.use(res => res.data, e => {
   // 统一处理错误
   ElMessage({
     type: 'warning',
-    message:e.response.data.message
+    message: e.response.data.message
   })
   // 如果是401错误，清除用户信息
   if (e.response.status === 401) {
