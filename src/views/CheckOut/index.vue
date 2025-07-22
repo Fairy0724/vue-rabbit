@@ -1,13 +1,21 @@
 <script setup>
 defineOptions({ name: 'CheckOut' })
-import { getCheckoutInfoAPI } from '@/apis/checkout';
+import { getCheckoutInfoAPI, createOrderAPI } from '@/apis/checkout';
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useCartStore } from '@/stores/cartStore';
+const router = useRouter();
 const checkInfo = ref({})  // 订单对象
 const curAddress = ref({})  // 默认地址
 const showDialog = ref(false)  // 控制切换地址对话框的显示
 // 地址对象
 const getCheckInfo = async () => {
   const res = await getCheckoutInfoAPI();
+  // 获取购物车中已选择的商品
+  const cartList = cartStore.cartList
+  const selectedGoods = cartList.filter(item => item.selected)
+  // 只显示已选择的商品
+  res.result.goods = selectedGoods
   checkInfo.value = res.result;
   // 适配默认地址
   const item = checkInfo.value?.userAddresses?.find(item => item.isDefault === 0)
@@ -26,6 +34,37 @@ const confirmAddress = () => {
 onMounted(() => {
   getCheckInfo();
 });
+
+// 创建订单
+const cartStore = useCartStore()
+const createOrder = async () => {
+  // 从购物车中获取已选择的商品
+  const cartList = cartStore.cartList
+  const selectedGoods = cartList.filter(item => item.selected)
+
+  const res = await createOrderAPI({
+    deliveryTimeType: 1,
+    patType: 1,
+    payChannel: 1,
+    buyerMessage: '',
+    goods: selectedGoods.map(item => {
+      return {
+        skuId: item.skuId,
+        count: item.count
+      }
+    }),
+    addressId: curAddress.value.id
+  })
+  const orderId = res.result.id
+  router.push({
+    path: '/pay',
+    query: {
+      id: orderId
+    }
+  })
+  // 更新购物车
+  cartStore.updateNewList()
+}
 </script>
 
 <template>
@@ -102,11 +141,11 @@ onMounted(() => {
           <div class="total">
             <dl>
               <dt>商品件数：</dt>
-              <dd>{{ checkInfo.summary?.goodsCount }}件</dd>
+              <dd>{{ cartStore.selectedCount }}件</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
-              <dd>¥{{ checkInfo.summary?.totalPrice.toFixed(2) }}</dd>
+              <dd>¥{{ cartStore.selectedPrice.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>运<i></i>费：</dt>
@@ -114,13 +153,13 @@ onMounted(() => {
             </dl>
             <dl>
               <dt>应付总额：</dt>
-              <dd class="price">{{ checkInfo.summary?.totalPayPrice.toFixed(2) }}</dd>
+              <dd class="price">¥{{ (cartStore.selectedPrice + (checkInfo.summary?.postFee || 0)).toFixed(2) }}</dd>
             </dl>
           </div>
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large">提交订单</el-button>
+          <el-button type="primary" size="large" @click="createOrder">提交订单</el-button>
         </div>
       </div>
     </div>
