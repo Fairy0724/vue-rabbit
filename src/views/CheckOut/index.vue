@@ -4,6 +4,7 @@ import { getCheckoutInfoAPI } from '@/apis/checkout';
 import { ref, onMounted } from 'vue';
 const checkInfo = ref({})  // 订单对象
 const curAddress = ref({})  // 默认地址
+const toggleFlag = ref(false)  // 控制切换地址对话框的显示
 // 地址对象
 const getCheckInfo = async () => {
   const res = await getCheckoutInfoAPI();
@@ -12,6 +13,12 @@ const getCheckInfo = async () => {
   const item = checkInfo.value?.userAddresses?.find(item => item.isDefault === 0)
   curAddress.value = item
 }
+// 切换地址
+const setAddress = (item) => {
+  curAddress.value = item
+  toggleFlag.value = false
+}
+
 onMounted(() => {
   getCheckInfo();
 });
@@ -115,6 +122,23 @@ onMounted(() => {
     </div>
   </div>
   <!-- 切换地址 -->
+  <el-dialog v-model="toggleFlag" title="切换收货地址" width="30%" center>
+    <div class="addressWrapper">
+      <div class="text item" v-for="item in checkInfo.userAddresses" :key="item.id">
+        <ul>
+          <li><span>收<i />货<i />人：</span>{{ item.receiver }}</li>
+          <li><span>联系方式：</span>{{ item.contact }}</li>
+          <li><span>收货地址：</span>{{ item.fullLocation }}{{ item.address }}</li>
+        </ul>
+      </div>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="toggleFlag = false">取消</el-button>
+        <el-button type="primary" @click="setAddress(item)">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
   <!-- 添加地址 -->
 </template>
 
@@ -300,6 +324,60 @@ onMounted(() => {
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 5px;
+  }
+}
+
+.addressWrapper {
+  max-height: 500px;
+  overflow-y: auto;
+
+  .text {
+    border: 1px solid #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+
+      li {
+        line-height: 30px;
+        display: flex;
+        align-items: center;
+
+        span {
+          color: #999;
+          margin-right: 5px;
+          min-width: 80px;
+
+          i {
+            width: 0.5em;
+            display: inline-block;
+            vertical-align: middle;
+            content: '';
+            border-left: 1px solid #e5e5e5;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.dialog-footer {
+  text-align: right;
+  padding-top: 20px;
+
+  .el-button {
+    margin-left: 10px;
   }
 }
 </style>
