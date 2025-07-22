@@ -4,7 +4,7 @@ import { getCheckoutInfoAPI } from '@/apis/checkout';
 import { ref, onMounted } from 'vue';
 const checkInfo = ref({})  // 订单对象
 const curAddress = ref({})  // 默认地址
-const toggleFlag = ref(false)  // 控制切换地址对话框的显示
+const showDialog = ref(false)  // 控制切换地址对话框的显示
 // 地址对象
 const getCheckInfo = async () => {
   const res = await getCheckoutInfoAPI();
@@ -14,9 +14,13 @@ const getCheckInfo = async () => {
   curAddress.value = item
 }
 // 切换地址
-const setAddress = (item) => {
-  curAddress.value = item
-  toggleFlag.value = false
+const activeAddress = ref({})
+const switchAddress = (item) => {
+  activeAddress.value = item
+}
+const confirmAddress = () => {
+  curAddress.value = activeAddress.value
+  showDialog.value = false
 }
 
 onMounted(() => {
@@ -41,7 +45,7 @@ onMounted(() => {
               </ul>
             </div>
             <div class="action">
-              <el-button size="large" @click="toggleFlag = true">切换地址</el-button>
+              <el-button size="large" @click="showDialog = true">切换地址</el-button>
               <el-button size="large" @click="addFlag = true">添加地址</el-button>
             </div>
           </div>
@@ -122,9 +126,10 @@ onMounted(() => {
     </div>
   </div>
   <!-- 切换地址 -->
-  <el-dialog v-model="toggleFlag" title="切换收货地址" width="30%" center>
+  <el-dialog v-model="showDialog" title="切换收货地址" width="30%" center>
     <div class="addressWrapper">
-      <div class="text item" v-for="item in checkInfo.userAddresses" :key="item.id">
+      <div class="text item" :class="{ active: activeAddress === item }" @click="switchAddress(item)"
+        v-for="item in checkInfo.userAddresses" :key="item.id">
         <ul>
           <li><span>收<i />货<i />人：</span>{{ item.receiver }}</li>
           <li><span>联系方式：</span>{{ item.contact }}</li>
@@ -134,8 +139,8 @@ onMounted(() => {
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="toggleFlag = false">取消</el-button>
-        <el-button type="primary" @click="setAddress(item)">确定</el-button>
+        <el-button>取消</el-button>
+        <el-button type="primary" @click="confirmAddress">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -196,188 +201,162 @@ onMounted(() => {
           >i {
             width: 0.5em;
             display: inline-block;
-            vertical-align: middle;
-            content: '';
-            border-left: 1px solid #e5e5e5;
-            margin-left: 5px;
           }
         }
       }
     }
+
+    >a {
+      color: $xtxColor;
+      width: 160px;
+      text-align: center;
+      height: 90px;
+      line-height: 90px;
+      border-right: 1px solid #f5f5f5;
+    }
   }
 
   .action {
-    padding: 0 20px;
+    width: 420px;
+    text-align: center;
+
+    .btn {
+      width: 140px;
+      height: 46px;
+      line-height: 44px;
+      font-size: 14px;
+
+      &.first-child {
+        margin-right: 10px;
+      }
+    }
   }
 }
 
 .goods {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  border-spacing: 0;
 
-  th {
+  .info {
+    display: flex;
     text-align: left;
-    color: #999;
-    padding: 10px 0;
 
-    &:nth-child(2),
-    &:nth-child(3),
-    &:nth-child(4),
-    &:nth-child(5) {
-      text-align: right;
+    img {
+      width: 70px;
+      height: 70px;
+      margin-right: 20px;
+    }
+
+    .right {
+      line-height: 24px;
+
+      p {
+        &.last-child {
+          color: #999;
+        }
+      }
     }
   }
 
-  td {
-    padding: 10px 0;
-    border-top: 1px solid #f5f5f5;
-
-    &:nth-child(2),
-    &:nth-child(3),
-    &:nth-child(4),
-    &:nth-child(5) {
-      text-align: right;
+  tr {
+    th {
+      background: #f5f5f5;
+      font-weight: normal;
     }
 
-    .info {
-      display: flex;
-      align-items: center;
+    td,
+    th {
+      text-align: center;
+      padding: 20px;
+      border-bottom: 1px solid #f5f5f5;
 
-      img {
-        width: 50px;
-        height: 50px;
-        border-radius: 5px;
-        margin-right: 10px;
+      &.first-child {
+        border-left: 1px solid #f5f5f5;
       }
 
-      .right {
-        p {
-          margin: 0;
-          line-height: 1.2;
-
-          &:first-child {
-            color: #333;
-            font-weight: bold;
-          }
-
-          &:last-child {
-            color: #999;
-            font-size: 12px;
-          }
-        }
+      &.last-child {
+        border-right: 1px solid #f5f5f5;
       }
     }
   }
 }
 
 .my-btn {
-  display: inline-block;
-  padding: 10px 20px;
-  margin-right: 10px;
-  border-radius: 5px;
-  background: #f5f5f5;
-  color: #333;
-  font-size: 14px;
+  width: 228px;
+  height: 50px;
+  border: 1px solid #e4e4e4;
   text-align: center;
-  line-height: 1.5;
-  transition: background 0.3s;
+  line-height: 48px;
+  margin-right: 25px;
+  color: #666666;
+  display: inline-block;
 
-  &.active {
-    background: #409eff;
-    color: #fff;
+  &.active,
+  &:hover {
+    border-color: $xtxColor;
   }
 }
 
 .total {
-  padding: 10px 0;
-  border-top: 1px solid #f5f5f5;
-  border-bottom: 1px solid #f5f5f5;
-
   dl {
     display: flex;
-    justify-content: space-between;
-    line-height: 30px;
+    justify-content: flex-end;
+    line-height: 50px;
 
     dt {
-      color: #999;
+      i {
+        display: inline-block;
+        width: 2em;
+      }
     }
 
     dd {
-      margin: 0;
-      color: #333;
-    }
-  }
+      width: 240px;
+      text-align: right;
+      padding-right: 70px;
 
-  .price {
-    color: #e63946;
-    font-weight: bold;
-    font-size: 18px;
-  }
-}
-
-.submit {
-  margin-top: 20px;
-  text-align: center;
-
-  .el-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-  }
-}
-
-.addressWrapper {
-  max-height: 500px;
-  overflow-y: auto;
-
-  .text {
-    border: 1px solid #f5f5f5;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-
-    &:hover {
-      background-color: #f5f5f5;
-    }
-
-    ul {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-
-      li {
-        line-height: 30px;
-        display: flex;
-        align-items: center;
-
-        span {
-          color: #999;
-          margin-right: 5px;
-          min-width: 80px;
-
-          i {
-            width: 0.5em;
-            display: inline-block;
-            vertical-align: middle;
-            content: '';
-            border-left: 1px solid #e5e5e5;
-            margin-left: 5px;
-          }
-        }
+      &.price {
+        font-size: 20px;
+        color: $priceColor;
       }
     }
   }
 }
 
-.dialog-footer {
+.submit {
   text-align: right;
-  padding-top: 20px;
+  padding: 60px;
+  border-top: 1px solid #f5f5f5;
+}
 
-  .el-button {
-    margin-left: 10px;
+.addressWrapper {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.text {
+  flex: 1;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+
+  &.item {
+    border: 1px solid #f5f5f5;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    &.active,
+    &:hover {
+      border-color: $xtxColor;
+      background: lighten($xtxColor, 50%);
+    }
+
+    >ul {
+      padding: 10px;
+      font-size: 14px;
+      line-height: 30px;
+    }
   }
 }
 </style>
