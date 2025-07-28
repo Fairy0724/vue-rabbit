@@ -11,6 +11,10 @@ import CartList from '@/views/CartList/index.vue'
 import CheckOut from '@/views/CheckOut/index.vue'
 import Pay from '@/views/Pay/index.vue'
 import PayBack from '@/views/Pay/PayBack.vue'
+import Member from '@/views/Member/index.vue'
+
+import UserInfo from '@/views/Member/components/UserInfo.vue'
+import UserOrder from '@/views/Member/components/UserOrder.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   //配置路由规则 path与component对应关系
@@ -61,6 +65,23 @@ const router = createRouter({
           path: 'paycallback',
           name: 'PayBack',
           component: PayBack,
+        },
+        {
+          path: 'member',
+          name: 'Member',
+          component: Member,
+          children: [
+            {
+              path: 'user',
+              name: 'User',
+              component: UserInfo,
+            },
+            {
+              path: 'order',
+              name: 'Order',
+              component: UserOrder,
+            }
+          ]
         }
       ]
     },
