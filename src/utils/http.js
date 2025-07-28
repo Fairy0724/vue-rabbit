@@ -10,7 +10,7 @@ import router from '@/router'
 const httpInstance = axios.create({
   baseURL: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',
   // 超时时间
-  timeout: 5000
+  timeout: 50000
 })
 
 //拦截器
@@ -28,12 +28,13 @@ httpInstance.interceptors.request.use(config => {
 // axios响应式拦截器
 httpInstance.interceptors.response.use(res => res.data, e => {
   // 统一处理错误
+  const message = e.response?.data?.message || e.message
   ElMessage({
     type: 'warning',
-    message: e.response.data.message
+    message
   })
   // 如果是401错误，清除用户信息
-  if (e.response.status === 401) {
+  if (e.response?.status === 401) {
     const userStore = useUserStore()
     userStore.clearUserInfo()
     // 跳转到登录页
