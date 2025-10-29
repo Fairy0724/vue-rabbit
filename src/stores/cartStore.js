@@ -18,8 +18,13 @@ export const useCartStore = defineStore('cart', () => {
   const updateNewList = async () => {
     // 获取最新的购物车列表
     const res = await findNewCartListAPI()
+    // 规范后端返回项的规格字段，兼容 attrsText / specsText / specs 数组
+    const list = (res.result || []).map(item => {
+      const attrsText = item.attrsText || item.specsText || (item.specs && Array.isArray(item.specs) ? item.specs.map(s => s.valueName || s.value || s).join(' ') : '')
+      return Object.assign({}, item, { attrsText })
+    })
     // 更新购物车列表
-    cartList.value = res.result
+    cartList.value = list
   }
 
   // 2. 定义action - addCart

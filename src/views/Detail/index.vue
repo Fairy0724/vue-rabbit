@@ -48,6 +48,9 @@ const addCart = () => {
       count: count.value,
       picture: goods.value.mainPictures[0],
       price: goods.value.price,
+      // 商品规格文本
+      specsText: skuObj.specsText,
+      // 兼容性字段，方便各处统一使用 attrsText 来显示规格
       attrsText: skuObj.specsText,
       selected: true
     })
@@ -65,7 +68,7 @@ const addCart = () => {
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: `/category/${goods.categories[1].id}` }">{{ goods.categories[1].name
-          }}</el-breadcrumb-item>
+            }}</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: `/category/sub/${goods.categories[0].id}` }">{{
             goods.categories[0].name }}</el-breadcrumb-item>
           <el-breadcrumb-item>{{ goods.name }}</el-breadcrumb-item>
@@ -128,7 +131,7 @@ const addCart = () => {
               <!-- sku组件 -->
               <XtxSku :goods="goods" @change="skuChange" />
               <!-- 数据组件 -->
-              <el-input-number v-model="count" @change="countChange" />
+              <el-input-number v-model="count" :min="1" @change="countChange" />
               <!-- 按钮组件 -->
               <div>
                 <el-button size="large" class="btn" @click="addCart">

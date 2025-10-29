@@ -2,14 +2,21 @@
 defineOptions({ name: 'CartList' })
 import { useCartStore } from '@/stores/cartStore';
 import { useRouter } from 'vue-router';
+import { formatAttrs } from '@/utils/format'
 
 const cartStore = useCartStore()
+// 使用公用 util 格式化规格显示
 const router = useRouter()
-const singleCheck = (i,selected) => {
+const singleCheck = (i, selected) => {
   cartStore.singleCheck(i.skuId, selected)
 }
 const allCheck = (selected) => {
   cartStore.allCheck(selected)
+}
+// 删除商品
+const delCart = (item) => {
+  // item 为当前行的商品对象
+  cartStore.delCart(item.skuId)
 }
 </script>
 
@@ -22,9 +29,10 @@ const allCheck = (selected) => {
             <tr>
               <th width="120">
                 <!-- 全选框 -->
-                <el-checkbox :model-value="cartStore.isAll" @change="allCheck"/>
+                <el-checkbox :model-value="cartStore.isAll" @change="allCheck" />
               </th>
               <th width="400">商品信息</th>
+              <th width="220">商品规格</th>
               <th width="220">单价</th>
               <th width="180">数量</th>
               <th width="180">小计</th>
@@ -36,7 +44,7 @@ const allCheck = (selected) => {
             <tr v-for="i in cartStore.cartList" :key="i.id">
               <td>
                 <!-- 单选框 -->
-                <el-checkbox :model-value="i.selected" @change="(selected)=>singleCheck(i,selected)"/>
+                <el-checkbox :model-value="i.selected" @change="(selected) => singleCheck(i, selected)" />
 
               </td>
               <td>
@@ -50,10 +58,13 @@ const allCheck = (selected) => {
                 </div>
               </td>
               <td class="tc">
+                <p>{{ formatAttrs(i) }}</p>
+              </td>
+              <td class="tc">
                 <p>¥{{ i.price }}</p>
               </td>
               <td class="tc">
-                <el-input-number v-model="i.count" />
+                <el-input-number v-model="i.count" :min="1" />
               </td>
               <td class="tc">
                 <p class="f16 red">¥{{ (i.price * i.count).toFixed(2) }}</p>
@@ -75,7 +86,7 @@ const allCheck = (selected) => {
                     <el-button type="primary">随便逛逛</el-button>
                   </el-empty>
                 </div>
-              </td> 
+              </td>
             </tr>
           </tbody>
         </table>
